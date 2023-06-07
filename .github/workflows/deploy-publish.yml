@@ -1,0 +1,72 @@
+name: Manual Deploy and Publish
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-github-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18
+      - run: npm ci
+      - run: npm run build
+      - run: npm install -g gh-pages && npx gh-pages --dist dist
+
+  publish-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Determine package version
+        id: version
+        run: |
+          current_version=$(node -p "require('./package.json').version")
+          new_version=$(npm version patch --no-git-tag-version)
+          echo "::set-output name=current_version::$current_version"
+          echo "::set-output name=new_version::$new_version"
+
+      - name: Build app
+        run: npm run build
+
+      - name: Deploy to GitHub Pages
+        run: |
+          npm install -g gh-pages
+          npx gh-pages --dist dist
+
+      - name: Package app
+        run: zip -r app.zip dist/
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ steps.version.outputs.new_version }}
+          release_name: Release ${{ steps.version.outputs.new_version }}
+          body: |
+            Automatic release triggered manually
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        id: upload_release_asset
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./app.zip
+          asset_name: app.zip
+          asset_content_type: application/zip
