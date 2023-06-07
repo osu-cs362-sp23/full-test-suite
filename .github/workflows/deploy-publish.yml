@@ -1,6 +1,6 @@
 name: Manual Deploy and Publish
 
-on: push
+on: workflow_dispatch
 
 jobs:
   deploy-github-pages:
