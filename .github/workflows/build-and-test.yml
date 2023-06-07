@@ -1,7 +1,13 @@
 name: Build and Run tests
-on: [ push, pull_request, workflow_dispatch ]
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
 jobs:
-  run-build-run-application:
+  run-build-application:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -10,7 +16,6 @@ jobs:
           node-version: 18
       - run: npm ci
       - run: npm run build
-      - run: npm run start
 
   run-jest-tests:
     runs-on: ubuntu-latest
