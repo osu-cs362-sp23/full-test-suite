@@ -1,9 +1,8 @@
 name: Deploy to GH Release
 on:
   push:
-    branches:
-      - main
-      - feature/ci_release
+    tags:
+      - 'v*'
 jobs:
   build-and-test:
     uses: ./.github/workflows/build-and-test.yml
