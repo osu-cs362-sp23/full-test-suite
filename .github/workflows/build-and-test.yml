@@ -1,10 +1,8 @@
 name: Build and test
 on:
   push:
-    branches:
-      - '*'
-    tags:
-      - '!*'
+    tags-ignore:
+      - 'v*'
   workflow_call:
     inputs:
       upload-pages-artifact:
