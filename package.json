@@ -5,7 +5,8 @@
   "scripts": {
     "build": "webpack",
     "start": "webpack serve --open",
-    "test": "jest"
+    "test:integration": "jest",
+    "test:e2e": "start-test start http://localhost:3001 cy:run"
   },
   "devDependencies": {
     "css-loader": "^6.7.4",
