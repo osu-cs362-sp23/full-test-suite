@@ -1,4 +1,4 @@
-name: Build and Run tests
+name: Build and test
 on:
   workflow_call:
     inputs:
@@ -6,7 +6,7 @@ on:
         type: boolean
         required: false
 jobs:
-  run-build-application:
+  build-and-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -15,13 +15,13 @@ jobs:
           node-version: 18
       - run: npm ci
       - run: npm run build
-
-  run-jest-tests:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - run: npm run test:integration
+      - run: npm run test:e2e
+      - uses: actions/upload-artifact@v3
         with:
-          node-version: 18
-      - run: npm ci
-      - run: npm run test
+          name: e2e-videos
+          path: cypress/videos/
+      - if: ${{ inputs.upload-pages-artifact }}
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: build/
