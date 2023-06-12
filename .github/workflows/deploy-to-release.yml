@@ -1,39 +1,49 @@
+name: Deploy to GH Release
 on:
-  workflow_dispatch:
   push:
-    # Sequence of patterns matched against refs/tags
-    tags:
-      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
-
-name: Upload Release Asset
-
+    branches:
+      - main
+      - feature/ci_release
+      - v
 jobs:
-  build:
-    name: Upload Release Asset
+  build-and-test:
+    uses: ./.github/workflows/build-and-test.yml
+    with:
+      upload-pages-artifact: true
+  deploy-to-release:
     runs-on: ubuntu-latest
+    needs: build-and-test
+    permissions: write-all
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Build project # This would actually build your project, using zip for an example artifact
-        run: |
-          zip --junk-paths my-artifact README.md
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Download Pages Artifact
+        uses: actions/download-artifact@v2
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          name: app-artifact
+          path: dist/
+      - run: ls -R
+      - name: Package app
+        run: zip -r app.zip dist/
+      - name: version
+        run: echo "::set-output name=version::$(./bin/azblogfilter --version)"
+        id: version
+      - name: release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
           draft: false
           prerelease: false
-      - name: Upload Release Asset
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
+          release_name: ${{ steps.version.outputs.version }}
+          tag_name: ${{ github.ref }}
+          body: |
+            Automatic release triggered manually
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Upload Release Asset
+        id: upload_release_asset
+        uses: actions/upload-release-asset@v1
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: ./my-artifact.zip
-          asset_name: my-artifact.zip
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./app.zip
+          asset_name: app.zip
           asset_content_type: application/zip
+
