@@ -1,8 +1,6 @@
 name: Build and test
 on:
   push:
-    tags-ignore:
-      - 'v*'
   workflow_call:
     inputs:
       upload-pages-artifact:
