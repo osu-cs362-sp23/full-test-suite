@@ -21,20 +21,17 @@ jobs:
       - run: mkdir -p dist/
       - run: tar -xf artifact.tar -C dist/
       - name: Package app
-        run: zip -r app.zip dist/
-      - name: version
-        run: echo "::set-output name=version::$(./bin/azblogfilter --version)"
-        id: version
+        run: zip -r app.zip dist/*
       - name: release
         uses: actions/create-release@v1
         id: create_release
         with:
           draft: false
           prerelease: false
-          release_name: ${{ steps.version.outputs.version }}
+          release_name: ${{ github.ref }}
           tag_name: ${{ github.ref }}
           body: |
-            Automatic release triggered manually
+            Automatic release
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: Upload Release Asset
