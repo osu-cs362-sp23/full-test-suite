@@ -15,6 +15,9 @@ jobs:
     steps:
       - name: Download Pages Artifact
         uses: actions/download-artifact@v2
+        with:
+          name: app-artifact
+          path: dist/
       - run: ls -R
       - name: Package app
         run: zip -r app.zip dist/
