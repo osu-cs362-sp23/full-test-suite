@@ -27,9 +27,9 @@ npm run build
 Running this command will generate a directory called `dist/` that will contain HTML and JS files comprising the built application.  These are the files you'll want to package for release and deploy in the CI/CD pipeline you build for the app.
 
 ## New Release (Extra Credit)
+In order to have CI/CD pipeline create a release and upload artifact for you, run these commands
 
-In order to have CI/CD pipeline release for you, run these commands.
-
+**Do NOT create a tag through Github. CI will fail. Create tags with this command from your command line**
 ```
 git tag -a v{Version Number} -m "{Commit Message}"
 git push origin v{Version Number}
