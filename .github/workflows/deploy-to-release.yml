@@ -1,0 +1,44 @@
+name: Deploy to GH Release
+on:
+  push:
+    branches:
+      - main
+      - feature/ci_release
+jobs:
+  build-and-test:
+    uses: ./.github/workflows/build-and-test.yml
+    with:
+      upload-pages-artifact: true
+  deploy-to-release:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Package app
+        run: zip -r app.zip dist/
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ github.sha }}
+          release_name: Release ${{ github.sha }}
+          body: |
+            Automatic release triggered manually
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        id: upload_release_asset
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./app.zip
+          asset_name: app.zip
+          asset_content_type: application/zip
+
