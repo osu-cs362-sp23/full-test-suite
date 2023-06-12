@@ -1,11 +1,10 @@
 name: Build and Run tests
 on:
-  pull_request:
-    branches:
-      - main
-  push:
-    branches:
-      - main
+  workflow_call:
+    inputs:
+      upload-pages-artifact:
+        type: boolean
+        required: false
 jobs:
   run-build-application:
     runs-on: ubuntu-latest
