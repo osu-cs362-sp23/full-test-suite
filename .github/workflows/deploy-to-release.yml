@@ -21,16 +21,21 @@ jobs:
       - run: ls -R
       - name: Package app
         run: zip -r app.zip dist/
-      - name: Create Release
-        id: create_release
+      - name: version
+        run: echo "::set-output name=version::$(./bin/azblogfilter --version)"
+        id: version
+      - name: release
         uses: actions/create-release@v1
+        id: create_release
         with:
-          tag_name: ${{ github.sha }}
-          release_name: Release ${{ github.sha }}
-          body: |
-            Automatic release triggered manually
           draft: false
           prerelease: false
+          release_name: ${{ steps.version.outputs.version }}
+          tag_name: ${{ github.ref }}
+          body: |
+            Automatic release triggered manually
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - name: Upload Release Asset
         id: upload_release_asset
         uses: actions/upload-release-asset@v1
