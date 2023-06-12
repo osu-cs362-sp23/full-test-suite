@@ -18,7 +18,7 @@ jobs:
         with:
           name: app-artifact
       - run: ls -R
-      - run: tar -czvf artifact.tar dist/
+      - run: tar -xf artifact.tar -C dist/
       - name: Package app
         run: zip -r app.zip dist/
       - name: version
