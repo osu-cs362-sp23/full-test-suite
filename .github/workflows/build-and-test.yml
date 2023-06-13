@@ -25,4 +25,5 @@ jobs:
       - if: ${{ inputs.upload-pages-artifact }}
         uses: actions/upload-pages-artifact@v1
         with:
+          name: app-artifact
           path: dist/
