@@ -5,10 +5,10 @@
   "scripts": {
     "build": "webpack",
     "start": "webpack serve --open",
-    "test:integration": "jest",
-    "test:e2e": "start-test start http://localhost:3001 cy:run",
     "test": "jest",
-    "cy:open": "cypress open"
+    "cy:open": "cypress open",
+    "test:integration": "jest",
+    "test:e2e": "start-test start http://localhost:3001 cy:run"
   },
   "devDependencies": {
     "@testing-library/cypress": "^9.0.0",
