@@ -4,11 +4,12 @@
   "description": "CS 362 Final Project",
   "scripts": {
     "build": "webpack",
-    "start": "webpack serve --open",
+    "start": "webpack serve --open --port 8081",
     "test": "jest",
     "cy:open": "cypress open",
+    "cy:run": "cypress run",
     "test:integration": "jest",
-    "test:e2e": "start-test start http://localhost:3001 cy:run"
+    "test:e2e": "start-test start http://localhost:8081 cy:run"
   },
   "devDependencies": {
     "@testing-library/cypress": "^9.0.0",
