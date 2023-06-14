@@ -26,5 +26,8 @@
     "moduleNameMapper": {
       "\\.css$": "<rootDir>/src/__mocks__/styleMock.js"
     }
+  },
+  "dependencies": {
+    "start-server-and-test": "^2.0.0"
   }
 }
