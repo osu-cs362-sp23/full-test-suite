@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-      - ci/fix/githubpages
 jobs:
   build-and-test:
     uses: ./.github/workflows/build-and-test.yml
