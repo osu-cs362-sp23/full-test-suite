@@ -9,7 +9,7 @@
     "test:e2e": "start-test start http://localhost:3001 cy:run"
   },
   "devDependencies": {
-    "@testing-library/dom": "^9.3.0",
+    "@testing-library/dom": "^9.3.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/user-event": "^14.4.3",
     "css-loader": "^6.7.4",
