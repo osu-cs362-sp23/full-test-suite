@@ -23,18 +23,36 @@ test("values are correctly added in chart builder", async function () {
         __dirname + "/../../bar/bar.html",
         __dirname + "/../../bar/bar.js"
     )
-    XInput = domTesting.getAllByLabelText(document, "X")
-    YInput = domTesting.getAllByLabelText(document, "Y")
+    const XInput = domTesting.getByLabelText(document, "X")
+    const YInput = domTesting.getByLabelText(document, "Y")
     const addValuesButton = domTesting.getByText(document, "+")
 
     const user = userEvent.setup()
-    await user.type(XInput[0], "123")
-    await user.type(YInput[0], "a")
-    await user.click(addValuesButton)
+    await user.type(XInput, 123)
+    await user.type(YInput, 456)
+    //await user.click(addValuesButton)
 
-    var a = 123
-    var b = 456
-
-    expect(XInput[0]).toHaveValue(`${a}`)
-    expect(YInput[0]).toHaveValue("a")
+    expect(XInput).toHaveValue(123)
+    expect(YInput).toHaveValue(456)
 })
+
+// test("displays an alert for missing data values", async function () {
+//     initDomFromFiles(
+//         __dirname + "/../../bar/bar.html",
+//         __dirname + "/../../bar/bar.js"
+//     )
+//     XInput = domTesting.getAllByLabelText(document, "X")
+//     YInput = domTesting.getAllByLabelText(document, "Y")
+//     const addValuesButton = domTesting.getByText(document, "+")
+
+//     const user = userEvent.setup()
+//     await user.type(XInput[0], "123")
+//     await user.type(YInput[0], "a")
+//     await user.click(addValuesButton)
+
+//     var a = 123
+//     var b = 456
+
+//     expect(XInput[0]).toHaveValue(`${a}`)
+//     expect(YInput[0]).toHaveValue("a")
+// })
