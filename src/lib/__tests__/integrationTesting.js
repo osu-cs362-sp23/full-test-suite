@@ -65,3 +65,55 @@ test("displays an alert for missing data values", async function () {
     expect(spy).toHaveBeenCalled()
 })
 
+test("displays an alert for missing axis labels", async function () {
+    initDomFromFiles(
+        __dirname + "/../../bar/bar.html",
+        __dirname + "/../../bar/bar.js"
+    )
+    const xInputs = await domTesting.findAllByLabelText(document, "X")
+    const yInputs = await domTesting.findAllByLabelText(document, "Y")
+    const generateChart = domTesting.getByText(document, "Generate chart")
+
+    const user = userEvent.setup()
+    await user.type(xInputs[0], "1")
+    await user.type(yInputs[0], "2")
+
+    const spy = jest.spyOn(window, "alert").mockImplementation(() => {})
+    await user.click(generateChart)
+    expect(spy).toHaveBeenCalled()
+})
+
+test("clears chart data", async function () {
+    window.localStorage.clear()
+    initDomFromFiles(
+        __dirname + "/../../bar/bar.html",
+        __dirname + "/../../bar/bar.js"
+    )
+    const xLabel = await domTesting.findByLabelText(document, "X label")
+    const yLabel = await domTesting.findByLabelText(document, "Y label")
+    const addValuesButton = domTesting.getByText(document, "+")
+    const clearChartButton = domTesting.getByText(document, "Clear chart data")
+
+    const user = userEvent.setup()
+    await user.type(xLabel, "Cats")
+    await user.type(yLabel, "Dogs")
+    await user.click(addValuesButton)
+    await user.click(addValuesButton)
+
+    let xInputs = await domTesting.findAllByLabelText(document, "X")
+    let yInputs = await domTesting.findAllByLabelText(document, "Y")
+    await user.type(xInputs[0], "1")
+    await user.type(yInputs[0], "2")
+    await user.type(xInputs[1], "3")
+    await user.type(yInputs[1], "4")
+    await user.type(xInputs[2], "5")
+    await user.type(yInputs[2], "6")
+    await user.click(clearChartButton)
+
+    xInputs = await domTesting.findAllByLabelText(document, "X")
+    yInputs = await domTesting.findAllByLabelText(document, "Y")
+    expect(xInputs.length).toEqual(1)
+    expect(yInputs.length).toEqual(1)
+    expect(xInputs[0].value).toMatch("")
+    expect(yInputs[0].value).toMatch("")
+})
