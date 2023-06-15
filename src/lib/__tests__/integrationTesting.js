@@ -19,40 +19,49 @@ function initDomFromFiles(htmlPath, jsPath) {
 }
 
 test("values are correctly added in chart builder", async function () {
+    window.localStorage.clear()
     initDomFromFiles(
         __dirname + "/../../bar/bar.html",
         __dirname + "/../../bar/bar.js"
     )
-    const XInput = domTesting.getByLabelText(document, "X")
-    const YInput = domTesting.getByLabelText(document, "Y")
     const addValuesButton = domTesting.getByText(document, "+")
-
     const user = userEvent.setup()
-    await user.type(XInput, 123)
-    await user.type(YInput, 456)
-    //await user.click(addValuesButton)
+    await user.click(addValuesButton)
+    await user.click(addValuesButton)
 
-    expect(XInput).toHaveValue(123)
-    expect(YInput).toHaveValue(456)
+    const xInputs = await domTesting.findAllByLabelText(document, "X")
+    const yInputs = await domTesting.findAllByLabelText(document, "Y")
+
+    await user.type(xInputs[0], "1")
+    await user.type(yInputs[0], "2")
+    await user.type(xInputs[1], "3")
+    await user.type(yInputs[1], "4")
+    await user.type(xInputs[2], "5")
+    await user.type(yInputs[2], "6")
+
+    expect(xInputs[0].value).toMatch("1")
+    expect(yInputs[0].value).toMatch("2")
+    expect(xInputs[1].value).toMatch("3")
+    expect(yInputs[1].value).toMatch("4")
+    expect(xInputs[2].value).toMatch("5")
+    expect(yInputs[2].value).toMatch("6")
 })
 
-// test("displays an alert for missing data values", async function () {
-//     initDomFromFiles(
-//         __dirname + "/../../bar/bar.html",
-//         __dirname + "/../../bar/bar.js"
-//     )
-//     XInput = domTesting.getAllByLabelText(document, "X")
-//     YInput = domTesting.getAllByLabelText(document, "Y")
-//     const addValuesButton = domTesting.getByText(document, "+")
+test("displays an alert for missing data values", async function () {
+    initDomFromFiles(
+        __dirname + "/../../bar/bar.html",
+        __dirname + "/../../bar/bar.js"
+    )
+    const xLabel = await domTesting.findByLabelText(document, "X label")
+    const yLabel = await domTesting.findByLabelText(document, "Y label")
+    const generateChart = domTesting.getByText(document, "Generate chart")
 
-//     const user = userEvent.setup()
-//     await user.type(XInput[0], "123")
-//     await user.type(YInput[0], "a")
-//     await user.click(addValuesButton)
+    const user = userEvent.setup()
+    await user.type(xLabel, "Cats")
+    await user.type(yLabel, "Dogs")
 
-//     var a = 123
-//     var b = 456
+    const spy = jest.spyOn(window, "alert").mockImplementation(() => {})
+    await user.click(generateChart)
+    expect(spy).toHaveBeenCalled()
+})
 
-//     expect(XInput[0]).toHaveValue(`${a}`)
-//     expect(YInput[0]).toHaveValue("a")
-// })
