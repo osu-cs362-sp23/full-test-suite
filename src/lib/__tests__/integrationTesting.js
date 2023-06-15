@@ -26,12 +26,14 @@ test("values are correctly added in chart builder", async function () {
     )
     const addValuesButton = domTesting.getByText(document, "+")
     const user = userEvent.setup()
+
+    // create data value slots
     await user.click(addValuesButton)
     await user.click(addValuesButton)
 
+    // type in some data
     const xInputs = await domTesting.findAllByLabelText(document, "X")
     const yInputs = await domTesting.findAllByLabelText(document, "Y")
-
     await user.type(xInputs[0], "1")
     await user.type(yInputs[0], "2")
     await user.type(xInputs[1], "3")
@@ -39,6 +41,8 @@ test("values are correctly added in chart builder", async function () {
     await user.type(xInputs[2], "5")
     await user.type(yInputs[2], "6")
 
+    // create a new slot and make sure our old data is still there
+    await user.click(addValuesButton)
     expect(xInputs[0].value).toMatch("1")
     expect(yInputs[0].value).toMatch("2")
     expect(xInputs[1].value).toMatch("3")
@@ -56,10 +60,12 @@ test("displays an alert for missing data values", async function () {
     const yLabel = await domTesting.findByLabelText(document, "Y label")
     const generateChart = domTesting.getByText(document, "Generate chart")
 
+    // put in labels only
     const user = userEvent.setup()
     await user.type(xLabel, "Cats")
     await user.type(yLabel, "Dogs")
 
+    // check that an alert pops up on chart generation
     const spy = jest.spyOn(window, "alert").mockImplementation(() => {})
     await user.click(generateChart)
     expect(spy).toHaveBeenCalled()
@@ -74,10 +80,12 @@ test("displays an alert for missing axis labels", async function () {
     const yInputs = await domTesting.findAllByLabelText(document, "Y")
     const generateChart = domTesting.getByText(document, "Generate chart")
 
+    // put in data only
     const user = userEvent.setup()
     await user.type(xInputs[0], "1")
     await user.type(yInputs[0], "2")
 
+    // check that an alert pops up on chart generation
     const spy = jest.spyOn(window, "alert").mockImplementation(() => {})
     await user.click(generateChart)
     expect(spy).toHaveBeenCalled()
@@ -94,12 +102,12 @@ test("clears chart data", async function () {
     const addValuesButton = domTesting.getByText(document, "+")
     const clearChartButton = domTesting.getByText(document, "Clear chart data")
 
+    // add in chart labels and data
     const user = userEvent.setup()
     await user.type(xLabel, "Cats")
     await user.type(yLabel, "Dogs")
     await user.click(addValuesButton)
     await user.click(addValuesButton)
-
     let xInputs = await domTesting.findAllByLabelText(document, "X")
     let yInputs = await domTesting.findAllByLabelText(document, "Y")
     await user.type(xInputs[0], "1")
@@ -110,6 +118,7 @@ test("clears chart data", async function () {
     await user.type(yInputs[2], "6")
     await user.click(clearChartButton)
 
+    // check that chart is cleared
     xInputs = await domTesting.findAllByLabelText(document, "X")
     yInputs = await domTesting.findAllByLabelText(document, "Y")
     expect(xInputs.length).toEqual(1)
