@@ -130,51 +130,40 @@ test("clears chart data", async function () {
     expect(chartTitle.value).toMatch("")
 })
 
-// test("data correctly sent to chart generation function", async function () {
-//     initDomFromFiles(
-//         __dirname + "/../../bar/bar.html",
-//         __dirname + "/../../bar/bar.js"
-//     )
-//     const chartTitle = await domTesting.findByLabelText(document, "Chart title")
-//     const xLabel = await domTesting.findByLabelText(document, "X label")
-//     const yLabel = await domTesting.findByLabelText(document, "Y label")
-//     const addValuesButton = domTesting.getByText(document, "+")
-//     const clearChartButton = domTesting.getByText(document, "Clear chart data")
-//     const generateChartButton = domTesting.getByText(document, "Generate chart")
+test("data correctly sent to chart generation function", async function () {
+    initDomFromFiles(
+        __dirname + "/../../bar/bar.html",
+        __dirname + "/../../bar/bar.js"
+    )
+    const chartTitle = await domTesting.findByLabelText(document, "Chart title")
+    const xLabel = await domTesting.findByLabelText(document, "X label")
+    const yLabel = await domTesting.findByLabelText(document, "Y label")
+    const addValuesButton = domTesting.getByText(document, "+")
+    const clearChartButton = domTesting.getByText(document, "Clear chart data")
+    const generateChartButton = domTesting.getByText(document, "Generate chart")
 
-//     // add in chart labels and data
-//     const user = userEvent.setup()
-//     await user.type(chartTitle, "Cats vs. Dogs")
-//     await user.type(xLabel, "Cats")
-//     await user.type(yLabel, "Dogs")
-//     await user.click(addValuesButton)
-//     await user.click(addValuesButton)
-//     let xInputs = await domTesting.findAllByLabelText(document, "X")
-//     let yInputs = await domTesting.findAllByLabelText(document, "Y")
-//     await user.type(xInputs[0], "1")
-//     await user.type(yInputs[0], "2")
-//     await user.type(xInputs[1], "3")
-//     await user.type(yInputs[1], "4")
-//     await user.type(xInputs[2], "5")
-//     await user.type(yInputs[2], "6")
+    // add in chart labels and data
+    const user = userEvent.setup()
+    await user.type(chartTitle, "Cats vs. Dogs")
+    await user.type(xLabel, "Cats")
+    await user.type(yLabel, "Dogs")
+    await user.click(addValuesButton)
+    await user.click(addValuesButton)
+    let xInputs = await domTesting.findAllByLabelText(document, "X")
+    let yInputs = await domTesting.findAllByLabelText(document, "Y")
+    await user.type(xInputs[0], "1")
+    await user.type(yInputs[0], "2")
+    await user.type(xInputs[1], "3")
+    await user.type(yInputs[1], "4")
+    await user.type(xInputs[2], "5")
+    await user.type(yInputs[2], "6")
 
-//     const generateChartImg = require("../generateChartImg")
-//     jest.mock("../generateChartImg", () => ({
-//         generateChartImg: jest.fn().mockReturnValue("http://placekitten.com/480/480"),
-//     }))
-//     generateChartImg.generateChartImg.mockClear()
-//     await user.click(generateChartButton)
-//     expect(generateChartImg.generateChartImg).toHaveBeenCalled()
+    const generateChartImg = require("../generateChartImg.js")
+    jest.mock("../generateChartImg", () => ({
+        generateChartImg: jest.fn().mockReturnValue("http://placekitten.com/480/480"),
+    }))
+    generateChartImg.generateChartImg.mockClear()
+    await user.click(generateChartButton)
+    expect(generateChartImg.generateChartImg).toMatchSnapshot()
 
-//     // verify that the generateChartImg function was called with the correct data
-//     expect(generateChartImg.generateChartImg).toHaveBeenCalledWith({
-//         chartTitle: "Cats vs. Dogs",
-//         xLabel: "Cats",
-//         yLabel: "Dogs",
-//         data: [
-//             { x: "1", y: "2" },
-//             { x: "3", y: "4" },
-//             { x: "5", y: "6" },
-//         ],
-//     })
-// })
+})
